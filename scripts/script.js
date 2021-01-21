@@ -19,6 +19,7 @@ $(document).ready(function(){
                         <input type="text" id="companyID${count}" name="companyID">
                         <button type="button" onclick="" id="${count}" class="searchBtn ml-3">Search</button>
                         <img src="./ajax-loader.gif" id="loadingIcon${count}" class="loadingIcon ml-3">
+                       
                         <p></p>
 
                         <label for="queueID">Queue ID: </label>
@@ -53,7 +54,9 @@ $(document).ready(function(){
             var data = "";
             
             $('.loadingIcon').hide()
-            $('.searchBtn').click(function(){
+            $('.searchBtn').click(function(event){
+                event.stopPropagation();
+                event.stopImmediatePropagation();
                 let id = $(this).attr('id')
                 dropdownArray[id] = "<option selected>No Queue Selected</option>";
                 let checkStatus = $("#chk"+id).prop("checked")//This gets the status of the clicked item
@@ -64,48 +67,35 @@ $(document).ready(function(){
                     method:'GET',
                     success: function(data,status,xhr){
 
-                        for(var x = 0;x < data.length;x++){
-                            if(data[x].is_active == 1){
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
+                        
+                        if(data.length > 0){
+                            dataArray[id] = data
+                            for(var x = 0;x < data.length;x++){
+                                if(data[x].is_active == 1){
+                                    dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
+                                }else if(data[x].is_active == 0 && !checkStatus){    
+                                    dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`;
+                                }
                             }
-                            else if(data[x].is_active == 0 && !checkStatus){    
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`;
-                            }
+                        }else{
+                            $('#loadingIcon'+id).after("<p></p><div style='margin-left:25%'>Unknown Queue</div>")
                         }
-            
                         $("#queueIDDropdown"+id).html(dropdownArray[id])
                         $('#loadingIcon'+id).hide()
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
                         console.log(XMLHttpRequest)
                         console.log(XMLHttpRequest.responseJSON.code)
-            
-                        data = [//Placeholder when the server is not working
-                            {
-                                "queue_id": "QUEUE01001",
-                                "is_active": 1
-                            },
-                            {
-                                "queue_id": "QUEUE01002",
-                                "is_active": 1
-                            },
-                            {
-                                "queue_id": "QUEUE01003",
-                                "is_active": 0
-                            }
-                        ]
-                        dataArray[id]=data
-                        for(var x = 0;x < data.length;x++){
-                            if(data[x].is_active == 1){
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
-                            }else if(data[x].is_active == 0 && !checkStatus){    
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`;
-                            }
+                        data = "";
+                        dataArray[id] = data;
+                        if(XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING"){
+                            $('#loadingIcon'+id).after("<p></p><div style='margin-left:25%'>Company ID is invalid</div>")
+                            alert("The company ID was invalid")
+                        }else if(XMLHttpRequest.status == 500){
+                            alert("Failed to fetch due to a Server Error")
+                        }else{
+                            alert("There was an Unknown Error")
                         }
-                        // console.log(checkStatus)
-                        // console.log($(".chkInactive").attr('id'))
-                        // console.log(id)
-                        console.log(dropdownArray)
                         $("#queueIDDropdown"+id).html(dropdownArray[id])
                         $('#loadingIcon'+id).hide()
                     }
@@ -122,6 +112,8 @@ $(document).ready(function(){
                 integerId = id.substring(id.length-1,id.length)
                 data = dataArray[integerId]
                 dropdownArray[integerId] = "<option selected>No Queue Selected</option>";
+                console.log(dropdownArray)
+                console.log(data)
                 if($("#"+id).prop("checked")){
 
                     for(var x = 0;x < data.length;x++){
@@ -141,7 +133,6 @@ $(document).ready(function(){
                     }
 
                 }
-                console.log(dropdownArray)
                 //id here is chk(number), we want the number, so we take the last character
                 $("#queueIDDropdown"+integerId).html(dropdownArray[integerId])
             })
