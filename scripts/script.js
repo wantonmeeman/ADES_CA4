@@ -23,8 +23,8 @@ $(document).ready(function(){
                         <p></p>
 
                         <label for="queueID">Queue ID: </label>
-                        <select id="queueIDDropdown${count}">
-                        <option selected>No Queue Selected</option>
+                        <select id="queueIDDropdown${count}" class="queueIDDropdown">
+                        <option value='value123' selected >No Queue Selected</option>
                         </select>
 
                         <input type="checkbox" id="chk${count}" name="chkInactive" value="inactive" class="chkInactive ml-3" checked>
@@ -106,7 +106,28 @@ $(document).ready(function(){
                 let id = $(this).attr('id')
                 $("#box"+id).remove()
             })
-            
+            $(".queueIDDropdown").change(function(){
+                let id = $(this).attr('id')
+                console.log("#"+id)
+                if(this.value != "No Queue Selected"){
+                let duration = 3;//Change this value for the length of the array to change or smth
+                let dateNow = new Date();
+                
+                let dateISOString = dateNow.toISOString().replace("Z","%2B00:00");//Z = +00:00, ask cher whether we shld change
+                $("#"+id).click(function(){
+                    $.ajax({
+                        url:`http://localhost:8080/company/arrival_rate?queue_id=${this.value}&from=${dateISOString}&duration=${duration}`,
+                        method:'GET',
+                        success: function(data,status,xhr){
+                            console.log(data)
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
+                            
+                        }
+                    })
+                })
+            }
+            })
             $(".chkInactive").change(function(){
                 let id = $(this).attr('id')
                 integerId = id.substring(id.length-1,id.length)
