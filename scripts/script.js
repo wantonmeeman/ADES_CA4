@@ -1,17 +1,17 @@
-$(document).ready(function(){
-    
+$(document).ready(function () {
+
     var count = 0
     var dropdownArray = [];
     var dataArray = [];
-    $("#addTrackingBtn").click(function(){
-            count++;
-            let content = $('.content')
-            let length = $('.tracking-content').length
+    $("#addTrackingBtn").click(function () {
+        count++;
+        let content = $('.content')
+        let length = $('.tracking-content').length
 
-            console.log(length);
-            console.log(content);
+        console.log(length);
+        console.log(content);
 
-            let tracking_content = `
+        let tracking_content = `
             <div id="box${count}" class="tracking-wrapper col-md-6">
                 <div class="tracking-content">
                     <form>
@@ -41,103 +41,155 @@ $(document).ready(function(){
                 </div>
             </div>
             `
-            //Does the order of the dropdown matter
-            //->inactive then active or nah
-            
-            if (length == 0) {
-                content.prepend(tracking_content)
-            } else {
-                $('.tracking-wrapper').last().after(tracking_content)
-            }
-            
-            
-            var data = "";
-            
-            $('.loadingIcon').hide()
-            $('.searchBtn').click(function(event){
-                event.stopPropagation();
-                event.stopImmediatePropagation();
-                let id = $(this).attr('id')
-                dropdownArray[id] = "<option selected>No Queue Selected</option>";
-                let checkStatus = $("#chk"+id).prop("checked")//This gets the status of the clicked item
-                $('#loadingIcon'+id).show()
-                
-                $.ajax({
-                    url:"http://localhost:8080/company/queue?company_id="+$("#companyID"+id).val(),
-                    method:'GET',
-                    success: function(data,status,xhr){
+        // Does the order of the dropdown matter
+        // -> inactive then active or nah
 
-                        
-                        if(data.length > 0){
-                            dataArray[id] = data
-                            for(var x = 0;x < data.length;x++){
-                                if(data[x].is_active == 1){
-                                    dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
-                                }else if(data[x].is_active == 0 && !checkStatus){    
-                                    dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`;
-                                }
+        if (length == 0) {
+            content.prepend(tracking_content)
+        } else {
+            $('.tracking-wrapper').last().after(tracking_content)
+        }
+
+
+        var data = "";
+
+        $('.loadingIcon').hide()
+        $('.searchBtn').click(function (event) {
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            let id = $(this).attr('id')
+            dropdownArray[id] = "<option selected>No Queue Selected</option>";
+            let checkStatus = $("#chk" + id).prop("checked")//This gets the status of the clicked item
+            $('#loadingIcon' + id).show()
+
+            $.ajax({
+                url: "http://localhost:8080/company/queue?company_id=" + $("#companyID" + id).val(),
+                method: 'GET',
+                success: function (data, status, xhr) {
+
+
+                    if (data.length > 0) {
+                        dataArray[id] = data
+                        for (var x = 0; x < data.length; x++) {
+                            if (data[x].is_active == 1) {
+                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
+                            } else if (data[x].is_active == 0 && !checkStatus) {
+                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id} (Inactive)</option>`;
                             }
-                        }else{
-                            $('#loadingIcon'+id).after("<p></p><div style='margin-left:25%'>Unknown Queue</div>")
                         }
-                        $("#queueIDDropdown"+id).html(dropdownArray[id])
-                        $('#loadingIcon'+id).hide()
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
-                        console.log(XMLHttpRequest)
-                        console.log(XMLHttpRequest.responseJSON.code)
-                        data = "";
-                        dataArray[id] = data;
-                        if(XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING"){
-                            $('#loadingIcon'+id).after("<p></p><div style='margin-left:25%'>Company ID is invalid</div>")
-                            alert("The company ID was invalid")
-                        }else if(XMLHttpRequest.status == 500){
-                            alert("Failed to fetch due to a Server Error")
-                        }else{
-                            alert("There was an Unknown Error")
-                        }
-                        $("#queueIDDropdown"+id).html(dropdownArray[id])
-                        $('#loadingIcon'+id).hide()
+                    } else {
+                        $('#loadingIcon' + id).after("<p></p><div style='margin-left:25%'>Unknown Queue</div>")
                     }
-                })
-            })
-
-            $(".closeBtn").click(function(){
-                let id = $(this).attr('id')
-                $("#box"+id).remove()
-            })
-            
-            $(".chkInactive").change(function(){
-                let id = $(this).attr('id')
-                integerId = id.substring(id.length-1,id.length)
-                data = dataArray[integerId]
-                dropdownArray[integerId] = "<option selected>No Queue Selected</option>";
-                console.log(dropdownArray)
-                console.log(data)
-                if($("#"+id).prop("checked")){
-
-                    for(var x = 0;x < data.length;x++){
-                        if(data[x].is_active == 1){
-                            dropdownArray[integerId] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
-                        }
+                    $("#queueIDDropdown" + id).html(dropdownArray[id])
+                    $('#loadingIcon' + id).hide()
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
+                    console.log(XMLHttpRequest)
+                    console.log(XMLHttpRequest.responseJSON.code)
+                    data = "";
+                    dataArray[id] = data;
+                    if (XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING") {
+                        $('#loadingIcon' + id).after("<p></p><div style='margin-left:25%'>Company ID is invalid</div>")
+                        alert("The company ID was invalid")
+                    } else if (XMLHttpRequest.status == 500) {
+                        alert("Failed to fetch due to a Server Error")
+                    } else {
+                        alert("There was an Unknown Error")
                     }
-
-                }else{
-
-                    for(var x = 0;x < data.length;x++){
-                        if(data[x].is_active == 1){
-                            dropdownArray[integerId] += `<option value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
-                        }else{
-                            dropdownArray[integerId] += `<option value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`
-                        }
-                    }
-
+                    $("#queueIDDropdown" + id).html(dropdownArray[id])
+                    $('#loadingIcon' + id).hide()
                 }
-                //id here is chk(number), we want the number, so we take the last character
-                $("#queueIDDropdown"+integerId).html(dropdownArray[integerId])
             })
-            
         })
+
+        $(".closeBtn").click(function () {
+            let id = $(this).attr('id')
+            $("#box" + id).remove()
+        })
+
+        $(".chkInactive").change(function () {
+            let id = $(this).attr('id')
+            integerId = id.substring(id.length - 1, id.length)
+            data = dataArray[integerId]
+            dropdownArray[integerId] = "<option selected>No Queue Selected</option>";
+            console.log(dropdownArray)
+            console.log(data)
+            if ($("#" + id).prop("checked")) {
+
+                for (var x = 0; x < data.length; x++) {
+                    if (data[x].is_active == 1) {
+                        dropdownArray[integerId] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
+                    }
+                }
+
+            } else {
+
+                for (var x = 0; x < data.length; x++) {
+                    if (data[x].is_active == 1) {
+                        dropdownArray[integerId] += `<option value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
+                    } else {
+                        dropdownArray[integerId] += `<option value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`
+                    }
+                }
+
+            }
+            //id here is chk(number), we want the number, so we take the last character
+            $("#queueIDDropdown" + integerId).html(dropdownArray[integerId])
+        })
+
+    })
+    
+    
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [1, 2, 3, 4, 5, 6],
+            datasets: [{
+                label: 'No. of Requests',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                borderColor: 'rgba(0, 0, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Arrival Rate'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time (Seconds)'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Number of Requests'
+                    }
+                }]
+            },
+            elements: {
+                line: {
+                    tension: 0
+                }
+            }
+        }
+    });
 })
 // function removeTab(box){//Can we use HTML+Jquery?
 //     document.getElementById(box).remove()

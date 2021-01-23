@@ -5,7 +5,7 @@
 
     <!-- BOOTSTRAP -->
     <!-- Latest compiled and minified CSS -->
-    
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -13,10 +13,16 @@
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP|Raleway|Inter" />
+
+    <script src="./node_modules/chart.js/dist/Chart.js"></script>
 </head>
 
 <body>
     <h2 class="site-title">Track Queue</h2>
+
+    <div class="d-flex justify-content-center" style="height: 500px; width: 1000px;">
+        <canvas  id="myChart"></canvas>
+    </div>
     <div class="container col-md-10">
         <div class="content row">
             <div class="btn-wrapper col-md-6 d-flex justify-content-center">
@@ -32,11 +38,6 @@
 
         </div>
     </div>
-
-    <script>
-        
-
-    </script>
 </body>
 
 </html>
