@@ -77,8 +77,9 @@ $(document).ready(function(){
                                     dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`;
                                 }
                             }
+                            $('#errorMsg'+id).html("")
                         }else{
-                            $('#errorMsg'+id).html("Error Msg")
+                            $('#errorMsg'+id).html("Queue is Empty")
                         }
                         $("#queueIDDropdown"+id).html(dropdownArray[id])
                         $('#loadingIcon'+id).hide()
@@ -89,7 +90,6 @@ $(document).ready(function(){
                         data = "";
                         dataArray[id] = data;
                         if(XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING"){
-                            //$('#loadingIcon'+id).after("Company ID is invalid")
                             $('#errorMsg'+id).html("Company Id is invalid")
                             alert("The company ID was invalid")
                         }else if(XMLHttpRequest.status == 500){
