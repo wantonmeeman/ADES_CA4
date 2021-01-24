@@ -174,7 +174,7 @@ $(document).ready(function () {
                     if (data[x].is_active == 1) {
                         dropdownArray[integerId] += `<option value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
                     } else {
-                        dropdownArray[integerId] += `<option value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`
+                        dropdownArray[integerId] += `<option value='${data[x].queue_id}'>${data[x].queue_id} (Inactive)</option>`
                     }
                 }
 
