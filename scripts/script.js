@@ -19,7 +19,7 @@ $(document).ready(function () {
                         <input type="text" id="companyID${count}" name="companyID">
                         <button type="button" onclick="" id="${count}" class="searchBtn ml-3">Search</button>
                         <img src="./ajax-loader.gif" id="loadingIcon${count}" class="loadingIcon ml-3">
-                       
+                        <p></p><div id="errorMsg${count}" style='margin-left:25%'></div>
                         <p></p>
 
                         <label for="queueID">Queue ID: </label>
@@ -64,7 +64,7 @@ $(document).ready(function () {
             event.stopImmediatePropagation();
             let id = $(this).attr('id')
             dropdownArray[id] = "<option selected>No Queue Selected</option>";
-            let checkStatus = $("#chk" + id).prop("checked") // This gets the status of the clicked item
+            let checkStatus = $("#chk" + id).prop("checked")//This gets the status of the clicked item
             $('#loadingIcon' + id).show()
 
             $.ajax({
@@ -79,11 +79,12 @@ $(document).ready(function () {
                             if (data[x].is_active == 1) {
                                 dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
                             } else if (data[x].is_active == 0 && !checkStatus) {
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id} (Inactive)</option>`;
+                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`;
                             }
                         }
+                        $('#errorMsg' + id).html("")
                     } else {
-                        $('#loadingIcon' + id).after("<p></p><div style='margin-left:25%'>Unknown Queue</div>")
+                        $('#errorMsg' + id).html("Queue is Empty")
                     }
                     $("#queueIDDropdown" + id).html(dropdownArray[id])
                     $('#loadingIcon' + id).hide()
@@ -94,11 +95,13 @@ $(document).ready(function () {
                     data = "";
                     dataArray[id] = data;
                     if (XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING") {
-                        $('#loadingIcon' + id).after("<p></p><div style='margin-left:25%'>Company ID is invalid</div>")
+                        $('#errorMsg' + id).html("Company Id is invalid")
                         alert("The company ID was invalid")
                     } else if (XMLHttpRequest.status == 500) {
+                        $('#errorMsg' + id).html("Server Error")
                         alert("Failed to fetch due to a Server Error")
                     } else {
+                        $('#errorMsg' + id).html("Unknown Error")
                         alert("There was an Unknown Error")
                     }
                     $("#queueIDDropdown" + id).html(dropdownArray[id])
@@ -126,7 +129,7 @@ $(document).ready(function () {
                         let dateNow = new Date();
 
                         let dateISOString = dateNow.toISOString().replace("Z", "%2B00:00");//Z = +00:00, ask cher whether we shld change
-                        
+
                         $.ajax({
                             url: `http://localhost:8080/company/arrival_rate?queue_id=${queue}&from=${dateISOString}&duration=${duration}`,
                             method: 'GET',
