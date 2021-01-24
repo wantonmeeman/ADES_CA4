@@ -72,3 +72,11 @@
     width:30px;
     height:30px;
 }
+
+.graph-loader {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    color:grey;
+}

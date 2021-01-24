@@ -38,6 +38,11 @@ $(document).ready(function () {
                                 d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                         </svg>
                     </button>
+
+                    <div class="d-flex justify-content-center">
+                        <i id="spinner${count}" class="graph-loader fa fa-spinner fa-spin fa-5x" style="display:none"></i>
+                        <canvas id="myChart${count}" style="display:none"></canvas>
+                    </div>
                 </div>
             </div>
             `
@@ -59,7 +64,7 @@ $(document).ready(function () {
             event.stopImmediatePropagation();
             let id = $(this).attr('id')
             dropdownArray[id] = "<option selected>No Queue Selected</option>";
-            let checkStatus = $("#chk" + id).prop("checked")//This gets the status of the clicked item
+            let checkStatus = $("#chk" + id).prop("checked") // This gets the status of the clicked item
             $('#loadingIcon' + id).show()
 
             $.ajax({
@@ -106,26 +111,46 @@ $(document).ready(function () {
             let id = $(this).attr('id')
             $("#box" + id).remove()
         })
+
         $(".queueIDDropdown").change(function () {
             let id = $(this).attr('id')
             console.log("#" + id)
             if (this.value != "No Queue Selected") {
+                let queue = this.value
                 let duration = 3;//Change this value for the length of the array to change or smth
-                let dateNow = new Date();
 
-                let dateISOString = dateNow.toISOString().replace("Z", "%2B00:00");//Z = +00:00, ask cher whether we shld change
                 $("#" + id).click(function () {
-                    $.ajax({
-                        url: `http://localhost:8080/company/arrival_rate?queue_id=${this.value}&from=${dateISOString}&duration=${duration}`,
-                        method: 'GET',
-                        success: function (data, status, xhr) {
-                            console.log(data)
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
+                    $("#spinner" + count).show()
+                    setInterval(function () {
+                        $("#spinner" + count).show()
+                        let dateNow = new Date();
 
-                        }
-                    })
+                        let dateISOString = dateNow.toISOString().replace("Z", "%2B00:00");//Z = +00:00, ask cher whether we shld change
+                        
+                        $.ajax({
+                            url: `http://localhost:8080/company/arrival_rate?queue_id=${queue}&from=${dateISOString}&duration=${duration}`,
+                            method: 'GET',
+                            success: function (data, status, xhr) {
+                                let labels = []
+                                let counts = []
+
+                                data.forEach(time => {
+                                    labels.push(new Date(time.timestamp * 1000).toLocaleTimeString())
+                                    counts.push(time.count)
+                                });
+
+                                createGraph(count, labels, counts)
+                                $('#spinner' + count).hide()
+                                $('#myChart' + count).show()
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
+
+                            }
+                        })
+                    }, 3000)
                 })
+
+
             }
         })
         $(".chkInactive").change(function () {
@@ -160,56 +185,65 @@ $(document).ready(function () {
     })
 
 
-    var ctx = document.getElementById('myChart');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [1, 2, 3, 4, 5, 6],
-            datasets: [{
-                label: 'No. of Requests',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                borderColor: 'rgba(0, 0, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            title: {
-                display: true,
-                text: 'Arrival Rate'
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Time (Seconds)'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Number of Requests'
-                    }
+    function createGraph(count, label, arrivalData) {
+        var ctx = document.getElementById(`myChart${count}`);
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: label,
+                datasets: [{
+                    label: 'No. of Requests',
+                    data: arrivalData, // [12, 19, 3, 5, 2, 3],
+                    backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                    borderColor: 'rgba(0, 0, 255, 1)',
+                    borderWidth: 1
                 }]
             },
-            elements: {
-                line: {
-                    tension: 0
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Arrival Rate'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 10,
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Number of Requests'
+                        }
+                    }]
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
                 }
             }
-        }
-    });
+        })
+    }
 })
 // function removeTab(box){//Can we use HTML+Jquery?
 //     document.getElementById(box).remove()
