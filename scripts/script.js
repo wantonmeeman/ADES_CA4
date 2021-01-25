@@ -42,7 +42,7 @@ $(document).ready(function () {
                     <div class="d-flex justify-content-center">
                         <div class="warning-wrapper">
                             <i class="warning-icon fa fa-exclamation-triangle fa-2x">
-                                <span class="tooltiptext">Unable to connect to t4he backend server!</span>
+                                <span class="tooltiptext">Unable to connect to the backend server!</span>
                             </i>
                         </div>
                         <i id="spinner${count}" class="graph-loader fa fa-spinner fa-spin fa-5x" style="display:none"></i>
