@@ -132,8 +132,8 @@ $(document).ready(function () {
                     setInterval(function () {
                         $("#spinner" + count).show()
                         let dateNow = new Date();
-
-                        let dateISOString = dateNow.toISOString().replace("Z", "%2B00:00");//Z = +00:00, ask cher whether we shld change
+                        let date3MinAgo = new Date(dateNow.getTime() - 3*60000)//Gets time from 3 Minutes ago
+                        let dateISOString = date3MinAgo.toISOString().replace("Z", "%2B00:00");//Z = +00:00, ask cher whether we shld change
 
                         $.ajax({
                             url: `http://localhost:8080/company/arrival_rate?queue_id=${queue}&from=${dateISOString}&duration=${duration}`,
