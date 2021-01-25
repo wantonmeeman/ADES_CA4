@@ -40,6 +40,11 @@ $(document).ready(function () {
                     </button>
 
                     <div class="d-flex justify-content-center">
+                        <div class="warning-wrapper">
+                            <i class="warning-icon fa fa-exclamation-triangle fa-2x">
+                                <span class="tooltiptext">Unable to connect to t4he backend server!</span>
+                            </i>
+                        </div>
                         <i id="spinner${count}" class="graph-loader fa fa-spinner fa-spin fa-5x" style="display:none"></i>
                         <canvas id="myChart${count}" style="display:none"></canvas>
                     </div>
@@ -147,7 +152,11 @@ $(document).ready(function () {
                                 $('#myChart' + count).show()
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
-
+                                if (XMLHttpRequest.status == 500) {
+                                    $('#errorMsg' + id).html("Server Error")
+                                    $('#warning-wrapper').show()
+                                    alert("Failed to fetch due to a Server Error")
+                                }
                             }
                         })
                     }, 3000)
