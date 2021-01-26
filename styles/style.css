@@ -1,9 +1,10 @@
 .site-title {
-    font-family: Noto Sans JP, Raleway, Inter;
+    font-family: 'CeraStencilPRO', Noto Sans JP, Raleway, Inter;
+    font-style: normal;
 }
 
 .container {
-    font-family: Noto Sans JP, Raleway, Inter;
+    font-family: 'CeraStencilPRO', Noto Sans JP, Raleway, Inter;
 }
 
 .content {

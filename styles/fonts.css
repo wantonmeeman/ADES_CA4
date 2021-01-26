@@ -1,0 +1,72 @@
+@font-face {
+    font-family: 'CeraStencilPRO';
+    src: url('./fonts/CeraStencilPRO-Light.eot');
+    src: local('☞Cera Stencil PRO Light'), local('CeraStencilPRO-Light'),
+        url('./fonts/CeraStencilPRO-Light.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/CeraStencilPRO-Light.woff2') format('woff2'),
+        url('./fonts/CeraStencilPRO-Light.woff') format('woff'),
+        url('./fonts/CeraStencilPRO-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CeraStencilPRO';
+    src: url('./fonts/CeraStencilPRO-Regular.eot');
+    src: local('☞Cera Stencil PRO'), local('CeraStencilPRO-Regular'),
+        url('./fonts/CeraStencilPRO-Regular.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/CeraStencilPRO-Regular.woff2') format('woff2'),
+        url('./fonts/CeraStencilPRO-Regular.woff') format('woff'),
+        url('./fonts/CeraStencilPRO-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CeraStencilPRO';
+    src: url('./fonts/CeraStencilPRO-Thin.eot');
+    src: local('☞Cera Stencil PRO Thin'), local('CeraStencilPRO-Thin'),
+        url('./fonts/CeraStencilPRO-Thin.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/CeraStencilPRO-Thin.woff2') format('woff2'),
+        url('./fonts/CeraStencilPRO-Thin.woff') format('woff'),
+        url('./fonts/CeraStencilPRO-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CeraStencilPRO';
+    src: url('./fonts/CeraStencilPRO-Black.eot');
+    src: local('☞Cera Stencil PRO Black'), local('CeraStencilPRO-Black'),
+        url('./fonts/CeraStencilPRO-Black.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/CeraStencilPRO-Black.woff2') format('woff2'),
+        url('./fonts/CeraStencilPRO-Black.woff') format('woff'),
+        url('./fonts/CeraStencilPRO-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CeraStencilPRO';
+    src: url('./fonts/CeraStencilPRO-Bold.eot');
+    src: local('☞Cera Stencil PRO Bold'), local('CeraStencilPRO-Bold'),
+        url('./fonts/CeraStencilPRO-Bold.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/CeraStencilPRO-Bold.woff2') format('woff2'),
+        url('./fonts/CeraStencilPRO-Bold.woff') format('woff'),
+        url('./fonts/CeraStencilPRO-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CeraStencilPRO';
+    src: url('./fonts/CeraStencilPRO-Medium.eot');
+    src: local('☞Cera Stencil PRO Medium'), local('CeraStencilPRO-Medium'),
+        url('./fonts/CeraStencilPRO-Medium.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/CeraStencilPRO-Medium.woff2') format('woff2'),
+        url('./fonts/CeraStencilPRO-Medium.woff') format('woff'),
+        url('./fonts/CeraStencilPRO-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+

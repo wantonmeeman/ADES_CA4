@@ -40,7 +40,7 @@ $(document).ready(function () {
                     </button>
 
                     <div class="d-flex justify-content-center">
-                        <div class="warning-wrapper">
+                        <div class="warning-wrapper" id="${count}">
                             <i class="warning-icon fa fa-exclamation-triangle fa-2x">
                                 <span class="tooltiptext">Unable to connect to the backend server!</span>
                             </i>
@@ -84,7 +84,7 @@ $(document).ready(function () {
                             if (data[x].is_active == 1) {
                                 dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
                             } else if (data[x].is_active == 0 && !checkStatus) {
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}(Inactive)</option>`;
+                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id} (Inactive)</option>`;
                             }
                         }
                         $('#errorMsg' + id).html("")
@@ -95,8 +95,10 @@ $(document).ready(function () {
                     $('#loadingIcon' + id).hide()
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
+                    $('#loadingIcon' + id).hide()
                     console.log(XMLHttpRequest)
                     console.log(XMLHttpRequest.responseJSON.code)
+                    console.log("id:" + id)
                     data = "";
                     dataArray[id] = data;
                     if (XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING") {
@@ -110,7 +112,7 @@ $(document).ready(function () {
                         alert("There was an Unknown Error")
                     }
                     $("#queueIDDropdown" + id).html(dropdownArray[id])
-                    $('#loadingIcon' + id).hide()
+                    // $('#loadingIcon' + id).hide()
                 }
             })
         })
@@ -125,15 +127,16 @@ $(document).ready(function () {
             console.log("#" + id)
             if (this.value != "No Queue Selected") {
                 let queue = this.value
-                let duration = 3;//Change this value for the length of the array to change or smth
+                let duration = 3;   // Change this value for the length of the array to change or smth
 
                 $("#" + id).click(function () {
                     $("#spinner" + count).show()
-                    setInterval(function () {
+
+                    setInterval(function () {   // New graph every 3 seconds
                         $("#spinner" + count).show()
                         let dateNow = new Date();
-                        let date3MinAgo = new Date(dateNow.getTime() - 3*60000)//Gets time from 3 Minutes ago
-                        let dateISOString = date3MinAgo.toISOString().replace("Z", "%2B00:00");//Z = +00:00, ask cher whether we shld change
+                        let date3MinAgo = new Date(dateNow.getTime() - 3 * 60000)   // Gets time from 3 minutes ago
+                        let dateISOString = date3MinAgo.toISOString().replace("Z", "%2B00:00");     // Z = +00:00, ask cher whether we shld change
 
                         $.ajax({
                             url: `http://localhost:8080/company/arrival_rate?queue_id=${queue}&from=${dateISOString}&duration=${duration}`,
@@ -151,7 +154,7 @@ $(document).ready(function () {
                                 $('#spinner' + count).hide()
                                 $('#myChart' + count).show()
                             },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
+                            error: function (XMLHttpRequest, textStatus, errorThrown) { //Error Function
                                 if (XMLHttpRequest.status == 500) {
                                     $('#errorMsg' + id).html("Server Error")
                                     $('#warning-wrapper').show()
@@ -254,8 +257,11 @@ $(document).ready(function () {
                 elements: {
                     line: {
                         tension: 0
+                    },
+                    point: {
+                        radius: 0
                     }
-                }
+                },
             }
         })
     }
