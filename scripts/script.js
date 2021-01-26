@@ -239,7 +239,10 @@ $(document).ready(function () {
                     }],
                     yAxes: [{
                         ticks: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            min: 0,
+                            max: 20,
+                            stepSize: 2
                         },
                         display: true,
                         scaleLabel: {
