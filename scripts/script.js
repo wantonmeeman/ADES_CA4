@@ -3,6 +3,7 @@ $(document).ready(function () {
     var count = 0
     var dropdownArray = [];
     var dataArray = [];
+    var intervalArray = [];
     $("#addTrackingBtn").click(function () {
         count++;
         let content = $('.content')
@@ -40,7 +41,7 @@ $(document).ready(function () {
                     </button>
 
                     <div class="d-flex justify-content-center">
-                        <div class="warning-wrapper" id="${count}">
+                        <div class="warning-wrapper" id="warning${count}">
                             <i class="warning-icon fa fa-exclamation-triangle fa-2x">
                                 <span class="tooltiptext">Unable to connect to the backend server!</span>
                             </i>
@@ -95,18 +96,21 @@ $(document).ready(function () {
                     $('#loadingIcon' + id).hide()
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {//Error Function
+                    // try jqXHR or xhr
+
                     $('#loadingIcon' + id).hide()
-                    console.log(XMLHttpRequest)
-                    console.log(XMLHttpRequest.responseJSON.code)
-                    console.log("id:" + id)
                     data = "";
                     dataArray[id] = data;
-                    if (XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING") {
-                        $('#errorMsg' + id).html("Company Id is invalid")
-                        alert("The company ID was invalid")
-                    } else if (XMLHttpRequest.status == 500) {
-                        $('#errorMsg' + id).html("Server Error")
-                        alert("Failed to fetch due to a Server Error")
+                    if (XMLHttpRequest.readyState == 4) {
+                        if (XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING") {
+                            $('#errorMsg' + id).html("Company Id is invalid")
+                            alert("The company ID was invalid")
+                        } else if (XMLHttpRequest.status == 500) {
+                            $('#errorMsg' + id).html("Server Error")
+                            alert("Failed to fetch due to a Server Error")
+                        }
+                    } else if (XMLHttpRequest.readyState == 0) {
+                        alert("Failed to fetch.")
                     } else {
                         $('#errorMsg' + id).html("Unknown Error")
                         alert("There was an Unknown Error")
@@ -124,16 +128,16 @@ $(document).ready(function () {
 
         $(".queueIDDropdown").change(function () {
             let id = $(this).attr('id')
-            console.log("#" + id)
+            let number = id.substring(15)
             if (this.value != "No Queue Selected") {
                 let queue = this.value
                 let duration = 3;   // Change this value for the length of the array to change or smth
 
                 $("#" + id).click(function () {
-                    $("#spinner" + count).show()
+                    $("#spinner" + number).show()
 
-                    setInterval(function () {   // New graph every 3 seconds
-                        $("#spinner" + count).show()
+                    var interval = setInterval(function () {   // New graph every 3 seconds
+                        $("#spinner" + number).show()
                         let dateNow = new Date();
                         let date3MinAgo = new Date(dateNow.getTime() - 3 * 60000)   // Gets time from 3 minutes ago
                         let dateISOString = date3MinAgo.toISOString().replace("Z", "%2B00:00");     // Z = +00:00, ask cher whether we shld change
@@ -150,19 +154,34 @@ $(document).ready(function () {
                                     counts.push(time.count)
                                 });
 
-                                createGraph(count, labels, counts)
-                                $('#spinner' + count).hide()
-                                $('#myChart' + count).show()
+                                createGraph(number, labels, counts)
+                                $('#spinner' + number).hide()
+                                $('#myChart' + number).show()
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) { //Error Function
-                                if (XMLHttpRequest.status == 500) {
-                                    $('#errorMsg' + id).html("Server Error")
-                                    $('#warning-wrapper').show()
-                                    alert("Failed to fetch due to a Server Error")
+                                if (XMLHttpRequest.readyState == 4) {
+                                    if (XMLHttpRequest.status == 500) {
+                                        $('#errorMsg' + id).html("Server Error")
+                                        $('#warning-wrapper').show()
+                                        alert("Failed to fetch due to a Server Error")
+                                    }
+                                } else if (XMLHttpRequest.readyState == 0) {
+                                    $("#spinner" + number).hide()
+
+                                    createGraph(number, [], [])
+                                    $('#myChart' + number).show()
+
+                                    $("#warning" + number).show()
+
+                                    clearInterval(intervalArray[number - 1])
+                                } else {
+                                    alert("Unknown error occured.")
                                 }
                             }
                         })
                     }, 3000)
+
+                    intervalArray.push(interval)
                 })
 
 
