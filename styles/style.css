@@ -1,9 +1,26 @@
+.logo-wrapper {
+    background-color: #8cd0e3;
+}
+
+.bliss-logo {
+    height: 10%;
+    width: 10%;
+}
+
 .site-title {
-    font-family: 'CeraStencilPRO', Noto Sans JP, Raleway, Inter;
+    font-family: CeraStencilPRO, Noto Sans JP, Raleway, Inter;
     font-style: normal;
+    font-size:15px;
+    font-weight:600;
+    background-color: #8cd0e3;
+    padding-top:10px;
+    padding-bottom: 20px;
+    color:white;
+    text-transform: uppercase;
 }
 
 .container {
+    margin-top:20px;
     font-family: 'CeraStencilPRO', Noto Sans JP, Raleway, Inter;
 }
 
@@ -30,17 +47,21 @@
 
 .addBtn {
     /* border: dashed; */
-    border-width: 2px;
-    border-radius: 5px;
+    border-width: 0px;
+    border-radius: 2px;
     height: 60px;
     padding: 15px;
     text-align: center;
     text-decoration: none;
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     margin: 4px 2px;
     cursor: pointer;
-    background-color: white;
+    
+    font-weight: 500;
+    text-transform: uppercase;
+    background-color: #f5ea77;
+    box-shadow: 3px 3px 0 #73d2e6;
     transition-duration: 0.4s;
 }
 
@@ -56,6 +77,7 @@
     border-width:1px;
     border-color: white;
     transition-duration: 0.4s;
+    box-shadow: 3px 3px 0 #f5ea77;
 }
 
 .searchBtn:hover{
