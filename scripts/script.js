@@ -124,6 +124,7 @@ $(document).ready(function () {
         $(".closeBtn").click(function () {
             let id = $(this).attr('id')
             $("#box" + id).remove()
+            clearInterval(intervalArray[id - 1])
         })
 
         $(".queueIDDropdown").change(function () {
@@ -137,7 +138,6 @@ $(document).ready(function () {
                     $("#spinner" + number).show()
 
                     var interval = setInterval(function () {   // New graph every 3 seconds
-                        $("#spinner" + number).show()
                         let dateNow = new Date();
                         let date3MinAgo = new Date(dateNow.getTime() - 3 * 60000)   // Gets time from 3 minutes ago
                         let dateISOString = date3MinAgo.toISOString().replace("Z", "%2B00:00");     // Z = +00:00, ask cher whether we shld change
@@ -146,6 +146,8 @@ $(document).ready(function () {
                             url: `http://localhost:8080/company/arrival_rate?queue_id=${queue}&from=${dateISOString}&duration=${duration}`,
                             method: 'GET',
                             success: function (data, status, xhr) {
+                                $("#warning" + number).hide()
+                                $("#spinner" + number).show()
                                 let labels = []
                                 let counts = []
 
@@ -154,11 +156,15 @@ $(document).ready(function () {
                                     counts.push(time.count)
                                 });
 
-                                createGraph(number, labels, counts)
-                                $('#spinner' + number).hide()
-                                $('#myChart' + number).show()
+                                setTimeout(function() {
+                                    createGraph(number, labels, counts)
+                                    $('#spinner' + number).hide()
+                                    $('#myChart' + number).show()
+                                }, 1000)
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) { //Error Function
+                                $("#spinner" + number).hide()
+
                                 if (XMLHttpRequest.readyState == 4) {
                                     if (XMLHttpRequest.status == 500) {
                                         $('#errorMsg' + id).html("Server Error")
@@ -166,14 +172,10 @@ $(document).ready(function () {
                                         alert("Failed to fetch due to a Server Error")
                                     }
                                 } else if (XMLHttpRequest.readyState == 0) {
-                                    $("#spinner" + number).hide()
-
-                                    createGraph(number, [], [])
+                                    if ($("#box" + number).find('.chartjs-size-monitor').length == 0) { createGraph(number, [], []) }
                                     $('#myChart' + number).show()
 
                                     $("#warning" + number).show()
-
-                                    clearInterval(intervalArray[number - 1])
                                 } else {
                                     alert("Unknown error occured.")
                                 }
@@ -181,7 +183,11 @@ $(document).ready(function () {
                         })
                     }, 3000)
 
-                    intervalArray.push(interval)
+                    if (intervalArray.length >= number) {
+                        clearInterval(intervalArray[number - 1])
+                    }
+                    
+                    intervalArray[number - 1] = interval
                 })
 
 
@@ -240,6 +246,7 @@ $(document).ready(function () {
                     text: 'Arrival Rate'
                 },
                 tooltips: {
+                    // enabled: false,
                     mode: 'index',
                     intersect: false,
                 },
