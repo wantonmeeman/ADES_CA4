@@ -90,7 +90,8 @@ $(document).ready(function () {
                         }
                         $('#errorMsg' + id).html("")
                     } else {
-                        $('#errorMsg' + id).html("Queue is Empty")
+                        $('#errorMsg' + id).html("Company does not exist!")
+                        alert("The company does not exist!")
                     }
                     $("#queueIDDropdown" + id).html(dropdownArray[id])
                     $('#loadingIcon' + id).hide()
@@ -103,11 +104,11 @@ $(document).ready(function () {
                     dataArray[id] = data;
                     if (XMLHttpRequest.readyState == 4) {
                         if (XMLHttpRequest.responseJSON.code == "INVALID_QUERY_STRING") {
-                            $('#errorMsg' + id).html("Company Id is invalid")
-                            alert("The company ID was invalid")
+                            $('#errorMsg' + id).html("Company ID is invalid!")
+                            alert("The company ID is invalid!")
                         } else if (XMLHttpRequest.status == 500) {
-                            $('#errorMsg' + id).html("Server Error")
-                            alert("Failed to fetch due to a Server Error")
+                            $('#errorMsg' + id).html("There was a server error.")
+                            alert("Failed to fetch due to a server error.")
                         }
                     } else if (XMLHttpRequest.readyState == 0) {
                         alert("Failed to fetch.")
