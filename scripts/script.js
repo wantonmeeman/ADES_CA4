@@ -5,6 +5,7 @@ $(document).ready(function () {
     var dataArray = [];
     var intervalArray = [];
     $("#addTrackingBtn").click(function () {
+        let queue;
         count++;
         let content = $('.content')
         let length = $('.tracking-content').length
@@ -69,7 +70,7 @@ $(document).ready(function () {
             event.stopPropagation();
             event.stopImmediatePropagation();
             let id = $(this).attr('id')
-            dropdownArray[id] = "<option selected>No Queue Selected</option>";
+            dropdownArray[id] = "<option>No Queue Selected</option>";
             let checkStatus = $("#chk" + id).prop("checked")//This gets the status of the clicked item
             $('#loadingIcon' + id).show()
 
@@ -77,15 +78,19 @@ $(document).ready(function () {
                 url: "http://localhost:8080/company/queue?company_id=" + $("#companyID" + id).val(),
                 method: 'GET',
                 success: function (data, status, xhr) {
-
+                    
 
                     if (data.length > 0) {
                         dataArray[id] = data
                         for (var x = 0; x < data.length; x++) {
+                            var dropdownSelector = "";
+                            if(data[x].queue_id == queue){
+                                dropdownSelector = "selected"
+                            }
                             if (data[x].is_active == 1) {
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id}</option>`;
+                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'${dropdownSelector}>${data[x].queue_id}</option>`;
                             } else if (data[x].is_active == 0 && !checkStatus) {
-                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'>${data[x].queue_id} (Inactive)</option>`;
+                                dropdownArray[id] += `<option class="active" value='${data[x].queue_id}'${dropdownSelector}>${data[x].queue_id} (Inactive)</option>`;
                             }
                         }
                         $('#errorMsg' + id).html("")
@@ -132,7 +137,7 @@ $(document).ready(function () {
             let id = $(this).attr('id')
             let number = id.substring(15)
             if (this.value != "No Queue Selected") {
-                let queue = this.value
+                queue = this.value
                 let duration = 3;   // Change this value for the length of the array to change or smth
 
                 $("#" + id).click(function () {
