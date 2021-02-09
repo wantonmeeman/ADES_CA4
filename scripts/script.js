@@ -75,7 +75,7 @@ $(document).ready(function () {
             $('#loadingIcon' + id).show()
 
             $.ajax({
-                url: "http://localhost:8080/company/queue?company_id=" + $("#companyID" + id).val(),
+                url: "https://virtual-queue-ca2-p1936348.herokuapp.com/company/queue?company_id=" + $("#companyID" + id).val(),
                 method: 'GET',
                 success: function (data, status, xhr) {
                     
@@ -149,7 +149,7 @@ $(document).ready(function () {
                         let dateISOString = date3MinAgo.toISOString().replace("Z", "%2B00:00");     // Z = +00:00, ask cher whether we shld change
 
                         $.ajax({
-                            url: `http://localhost:8080/company/arrival_rate?queue_id=${queue}&from=${dateISOString}&duration=${duration}`,
+                            url: `https://virtual-queue-ca2-p1936348.herokuapp.com/company/arrival_rate?queue_id=${queue}&from=${dateISOString}&duration=${duration}`,
                             method: 'GET',
                             success: function (data, status, xhr) {
                                 $("#warning" + number).hide()
