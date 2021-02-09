@@ -1,0 +1,29 @@
+{
+  "name": "gothhub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest -i",
+    "predeploy": "npm i"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chart.js": "2.9.4",
+    "chartjs-color": "2.4.1",
+    "chartjs-color-string": "0.6.0",
+    "color-convert": "1.9.3",
+    "color-name": "1.1.4",
+    "moment": "2.29.1"
+  },
+  "devDependencies": {
+    "chart.js": "2.9.4",
+    "chartjs-color": "2.4.1",
+    "chartjs-color-string": "0.6.0",
+    "color-convert": "1.9.3",
+    "color-name": "1.1.4",
+    "moment": "2.29.1"
+  }
+}
